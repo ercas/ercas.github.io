@@ -9,42 +9,42 @@
             integrity="sha512-GffPMF3RvMeYyc1LWMHtK8EbPv0iNZ8/oTtHPx9/cc2ILxQ+u905qIwdpULaqDkyBKgOaB57QTMg7ztg8Jm2Og=="
             crossorigin=""></script>
         <style>
-            #map {
+            body {
+                margin: 16px;
+            }
+
+            table {
                 height: 100%;
                 width: 100%;
+            }
+
+            #map {
+                width: 66%;
+                height: 100%;
+            }
+
+            #sidebar {
+                padding: 20px
             }
         </style>
     </head>
     <body>
-        <div id=map></div>
+        <table>
+            <tr>
+                <td id=map></td>
+                <td id=sidebar valign=top>
+                    <h2>partial list of hazardous waste generators in Boston</h2>
+                    this map was generated from the 2017 version of the <a href=http://massdep.org/BAW/hwgenids.xls>MassDEP hazardous waste generator list</a>, which includes a list for all generators of hazardous waste in Massachusetts. the list was processed as follows:
+                    <ol>
+                        <li>raw data (25641 records)</li>
+                        <li>subset to <code>Town == Boston | Cambridge | Dorchester | Dorchester Center | Revere Beach | Roxbury | Somerville | South Boston</code> (1867 records)</li>
+                        <li>run through <a href=https://geocoding.geo.census.gov/geocoder/geographies/addressbatch?form>U.S. Census geocoder</a> and join on exact matches (1257 records)
+                    </ol>
+                    click on a marker to get more information. information comes directly from the MassDEP file's column values.
+                </td>
+            </tr>
+        </table>
         <script src=hazardous_waste.js></script>
-        <script>
-            var map = L.map("map").setView([42.3235, -71.0865], 12);
-            L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
-                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
-                subdomains: 'abcd',
-                maxZoom: 19
-            }).addTo(map);
-
-            function dict_to_html(dict) {
-                var html = "";
-                var first = true;
-                for (var key in dict) {
-                    if (!first) {
-                        html = html + "<br>";
-                    }
-                    html = html + key + ": " + dict[key];
-                    first = false;
-                }
-                return html;
-            }
-
-            var geojson = L.geoJSON(geo, {
-                onEachFeature: function (feature, layer) {
-                    layer.bindPopup(dict_to_html(feature.properties));
-                }
-            });
-            geojson.addTo(map);
-        </script>
+        <script src=app.js></script>
     </body>
 </html>
