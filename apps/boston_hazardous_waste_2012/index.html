@@ -1,0 +1,50 @@
+<html>
+    <head>
+        <meta charset=utf-8>
+        <meta title="Hazardous Waste in the Boston Area">
+        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.5.1/dist/leaflet.css"
+            integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ=="
+            crossorigin=""/>
+        <script src="https://unpkg.com/leaflet@1.5.1/dist/leaflet.js"
+            integrity="sha512-GffPMF3RvMeYyc1LWMHtK8EbPv0iNZ8/oTtHPx9/cc2ILxQ+u905qIwdpULaqDkyBKgOaB57QTMg7ztg8Jm2Og=="
+            crossorigin=""></script>
+        <style>
+            #map {
+                height: 100%;
+                width: 100%;
+            }
+        </style>
+    </head>
+    <body>
+        <div id=map></div>
+        <script src=hazardous_waste.js></script>
+        <script>
+            var map = L.map("map").setView([42.3235, -71.0865], 12);
+            L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+                subdomains: 'abcd',
+                maxZoom: 19
+            }).addTo(map);
+
+            function dict_to_html(dict) {
+                var html = "";
+                var first = true;
+                for (var key in dict) {
+                    if (!first) {
+                        html = html + "<br>";
+                    }
+                    html = html + key + ": " + dict[key];
+                    first = false;
+                }
+                return html;
+            }
+
+            var geojson = L.geoJSON(geo, {
+                onEachFeature: function (feature, layer) {
+                    layer.bindPopup(dict_to_html(feature.properties));
+                }
+            });
+            geojson.addTo(map);
+        </script>
+    </body>
+</html>
